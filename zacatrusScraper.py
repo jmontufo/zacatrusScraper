@@ -1,6 +1,17 @@
 from urllib.request import Request, urlopen, URLError, re, urlparse
 import datetime
 import time
+from bs4 import BeautifulSoup
+
+class BoardGame:
+    
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        
+    def __str__(self):
+        return self.name + "," + str(self.price) + "," + self.availability
+
 
 class Throttle:
     """Add a delay between downloads to the same domain
@@ -52,6 +63,37 @@ def crawl_sitemap(url, max_downloaded_pages = 1000000):
         print(download(link))
         downloaded_pages = downloaded_pages + 1
         
+def title_meta(tag):
+    return tag.name == 'meta' and tag.has_attr('property') and tag['property'] == 'og:title'
+
+def price_meta(tag):
+    return tag.name == 'meta' and tag.has_attr('property') and tag['property'] == 'product:price:amount'
+
+def availability_span(tag):
+    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock' and tag['class'][1] == 'available'
+    
+        
+def scrap(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    # print(soup.prettify())
+    attributes_table = soup.find(id="product-attribute-specs-table")
+    
+    if attributes_table is not None:
+        title_container = soup.find(title_meta)
+        title = title_container['content']
+        
+        price_container = soup.find(price_meta)
+        price = price_container['content']
+        
+        bg = BoardGame(title, price)        
+        
+        availability_container = soup.find(availability_span)
+        bg.availability = availability_container.find('span').string
+        
+        print (bg)
+    
+        #falta obtenir totes les dades de attributes_table
+        
 def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pages = 1000000):
     """Crawl from the given seed URL following links matched by link_regex
     """    
@@ -69,6 +111,8 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
         
             throttle.wait(url)
             html = download(url)
+            
+            scrap(html)
             
             downloaded_pages = downloaded_pages + 1
             
@@ -91,7 +135,7 @@ def get_links(html):
 #print(download('http://www.zacatrus.com'))
 #crawl_sitemap('https://zacatrus.es/pub/media/sitemap.xml',10)
 
-link_crawler('https://zacatrus.es/juegos-de-mesa.html', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 10)
+link_crawler('https://zacatrus.es/juegos-de-mesa.html', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 3)
 
 # if re.match('https://www.zacatrus.es/*', 'https://zacatrus.es/juegos-de-mesa/para_2.html'):
 #     print('holi')
