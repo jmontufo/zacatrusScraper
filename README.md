@@ -3,8 +3,8 @@
 
 ## Autors
 
-Marta Montclus 
-Jose Montufo
+- Marta Montclus 
+- Jose Montufo
 
 ## Descripció del contingut
 
