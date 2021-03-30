@@ -1,1 +1,1 @@
-# Web Scraper para la obtencion de dataset de Juegos de Mesa de la tienda online de Zacatrus
+# Web Scraper per a l'obtenció de jocs de taula de la botiga online Zacatrus
