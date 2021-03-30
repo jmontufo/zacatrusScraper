@@ -2,17 +2,125 @@ from urllib.request import Request, urlopen, URLError, re, urlparse
 import datetime
 import time
 from bs4 import BeautifulSoup
+import csv
+
+
 
 class BoardGame:
     
     def __init__(self, name, price):
         self.name = name
         self.price = price
+        self.availability = ''
+        self.autor = ''
+        self.BGG = ''
+        self.tematica = ''
+        self.sibuscas = ''
+        self.edad = ''
+        self.num_jugadores = ''
+        self.tiempo = ''
+        self.medidas = ''
+        self.complejidad = ''
+        self.editorial = ''
+        self.dependencia_idioma = ''
+        self.mecanica = ''
+        self.idioma = ''
         
     def __str__(self):
-        return self.name + "," + str(self.price) + "," + self.availability
+        toreturn = self.name
+        toreturn = toreturn + "," + str(self.price)
+        toreturn = toreturn + "," + self.availability
+        toreturn = toreturn + "," + self.autor
+        toreturn = toreturn + "," + self.BGG 
+        toreturn = toreturn + "," + self.tematica 
+        toreturn = toreturn + "," + self.sibuscas 
+        toreturn = toreturn + "," + self.edad 
+        toreturn = toreturn + "," + self.num_jugadores 
+        toreturn = toreturn + "," + self.tiempo 
+        toreturn = toreturn + "," + self.medidas 
+        toreturn = toreturn + "," + self.complejidad 
+        toreturn = toreturn + "," + self.editorial 
+        toreturn = toreturn + "," + self.dependencia_idioma 
+        toreturn = toreturn + "," + self.mecanica 
+        toreturn = toreturn + "," + self.idioma
+        
+        return toreturn
+    
+    def to_array(self):
+        
+        toreturn = []
+        toreturn.append(self.name)
+        toreturn.append(self.price)
+        toreturn.append(self.availability)
+        toreturn.append(self.autor)
+        toreturn.append(self.BGG)
+        toreturn.append(self.tematica)
+        toreturn.append(self.sibuscas)
+        toreturn.append(self.edad)
+        toreturn.append(self.num_jugadores)
+        toreturn.append(self.tiempo)
+        toreturn.append(self.medidas)
+        toreturn.append(self.complejidad)
+        toreturn.append(self.editorial)
+        toreturn.append(self.dependencia_idioma)
+        toreturn.append(self.mecanica)
+        toreturn.append(self.idioma)
+        
+        return toreturn
+    
+    def build_header():
+        
+        toreturn = []
+        toreturn.append('Nombre')
+        toreturn.append('Precio')
+        toreturn.append('Disponibilidad')
+        toreturn.append('Autor')
+        toreturn.append('BGG')
+        toreturn.append('Temática')
+        toreturn.append('Si Buscas...')
+        toreturn.append('Edad')
+        toreturn.append('Núm. jugadores')
+        toreturn.append('Tiempo de juego')
+        toreturn.append('Medidas')
+        toreturn.append('Complejidad')
+        toreturn.append('Editorial')
+        toreturn.append('Dependencia del idioma')
+        toreturn.append('Mecánica')
+        toreturn.append('Idioma')
+        
+        return toreturn
 
-
+    def add_attribute(self, attribute, value):
+        if attribute == 'Autor':
+            self.autor = value
+        elif attribute == 'BGG':
+            self.BGG = value
+        elif attribute == 'Temática':
+            self.tematica = value
+        elif attribute == 'Si buscas...':
+            self.sibuscas = value
+        elif attribute == 'Edad':
+            self.edad = value
+        elif attribute == 'Núm. jugadores':
+            self.num_jugadores = value
+        elif attribute == 'Tiempo de juego':
+            self.tiempo = value
+        elif attribute == 'Medidas':
+            self.medidas = value
+        elif attribute == 'Complejidad':
+            self.complejidad = value
+        elif attribute == 'Editorial':
+            self.editorial = value
+        elif attribute == 'Dependencia del idioma':
+            self.dependencia_idioma = value
+        elif attribute == 'Mecánica':
+            self.mecanica = value
+        elif attribute == 'Idioma':
+            self.idioma = value
+        else:
+            print(attribute)
+        
+        
 class Throttle:
     """Add a delay between downloads to the same domain
     """
@@ -63,26 +171,38 @@ def crawl_sitemap(url, max_downloaded_pages = 1000000):
         print(download(link))
         downloaded_pages = downloaded_pages + 1
         
-def title_meta(tag):
-    return tag.name == 'meta' and tag.has_attr('property') and tag['property'] == 'og:title'
-
-def price_meta(tag):
-    return tag.name == 'meta' and tag.has_attr('property') and tag['property'] == 'product:price:amount'
-
 def availability_span(tag):
-    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock' and tag['class'][1] == 'available'
-    
+    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'    
         
 def scrap(html):
     soup = BeautifulSoup(html, 'html.parser')
-    # print(soup.prettify())
+    
+    description = soup.find("div", class_="cn_product_visited")
+    
+    if description is None:
+        return None
+    
+    
+    categories = description.find_all("span",class_="category")
+    is_board_game = False
+    
+    for category in categories:
+        if category.string == '/Juegos de mesa':
+            is_board_game = True
+    
+    if not is_board_game:
+        return None
+    
     attributes_table = soup.find(id="product-attribute-specs-table")
     
     if attributes_table is not None:
-        title_container = soup.find(title_meta)
+        # title_container = soup.find(title_meta)
+        # title = title_container['content']
+        
+        title_container = soup.find("meta",  property="og:title")
         title = title_container['content']
         
-        price_container = soup.find(price_meta)
+        price_container = soup.find("meta",  property="product:price:amount")
         price = price_container['content']
         
         bg = BoardGame(title, price)        
@@ -90,9 +210,16 @@ def scrap(html):
         availability_container = soup.find(availability_span)
         bg.availability = availability_container.find('span').string
         
-        print (bg)
+        for attribute_row in attributes_table.tbody.find_all("tr"):
+            attribute_cell = attribute_row.td
+            attribute_name = attribute_cell['data-th']
+            attribute_value = attribute_cell.string
+            
+            bg.add_attribute(attribute_name, attribute_value)
+        
+        return bg
     
-        #falta obtenir totes les dades de attributes_table
+    return None
         
 def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pages = 1000000):
     """Crawl from the given seed URL following links matched by link_regex
@@ -102,27 +229,33 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
     seen[seed_url] = 0
     downloaded_pages = 0
     throttle = Throttle(delay)
-
-    while crawl_queue and downloaded_pages < max_downloaded_pages:
-        url = crawl_queue.pop()
-        
-        depth = seen[url]
-        if depth != max_depth:
-        
-            throttle.wait(url)
-            html = download(url)
+    with open('games.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=';', quotechar='\'', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow(BoardGame.build_header())
+    
+        while crawl_queue and downloaded_pages < max_downloaded_pages:
+            url = crawl_queue.pop()
             
-            scrap(html)
+            depth = seen[url]
+            if depth != max_depth:
             
-            downloaded_pages = downloaded_pages + 1
-            
-            # filter for links matching our regular expression
-            for link in get_links(html):
-                if re.match(link_regex, link):
-                    # check if have already seen this link
-                    if link not in seen:
-                        seen[link] = depth + 1
-                        crawl_queue.append(link)
+                throttle.wait(url)
+                html = download(url)
+                
+                game = scrap(html)
+                
+                if game is not None:
+                    spamwriter.writerow(game.to_array())
+                
+                downloaded_pages = downloaded_pages + 1
+                
+                # filter for links matching our regular expression
+                for link in get_links(html):
+                    if re.match(link_regex, link):
+                        # check if have already seen this link
+                        if link not in seen:
+                            seen[link] = depth + 1
+                            crawl_queue.append(link)
                 
 def get_links(html):
     """Return a list of links from html
@@ -135,7 +268,7 @@ def get_links(html):
 #print(download('http://www.zacatrus.com'))
 #crawl_sitemap('https://zacatrus.es/pub/media/sitemap.xml',10)
 
-link_crawler('https://zacatrus.es/juegos-de-mesa.html', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 3)
+link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50)
 
 # if re.match('https://www.zacatrus.es/*', 'https://zacatrus.es/juegos-de-mesa/para_2.html'):
 #     print('holi')
