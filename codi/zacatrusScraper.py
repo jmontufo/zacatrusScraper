@@ -7,8 +7,61 @@ import csv
 
 
 class BoardGame:
+   	"""
+	This is a class to represent a Board Game.
+
+	Attributes
+	----------
+	name : str
+		name of the item
+	price : int
+		price at the moment of the download of the data from 			Zacatrus.es, in Euro
+	availability : str
+		tells if the game is avaiable for purchase at the website or not
+	autor : str
+		creator of the game
+        BGG : int
+		id of the game in BGG database
+        tematica : str
+		topics that appear in the game, as culture, trade, etc. Can have multiple values
+        sibuscas : str
+		tags to find the game e.g. family, party, etc. Can have multiple values
+        edad : str
+		recommended players' age, grouped in intervals. Can have multiple values
+        num_jugadores : str
+		minimum and maximum number of players
+        tiempo : str
+		average duration of a game
+        medidas : str
+		size of the packaging
+        complejidad : str
+		tells if the game is easy, medium or difficult to play
+        editorial : str
+		publisher of the game
+        dependencia_idioma : str
+		tells if it is necessary to know the laguage of the game to play, ranked in: not necessary / only instructions / highly necessary
+        mecanica : str
+		game's mechanism (e.g. question-answer, crawler, etc.). Can have multiple values
+        idioma : str
+		language of the game
+    		
+	"""
     
     def __init__(self, name, price):
+	"""
+	Constructs all the necessarty attributes for the BoardGame object
+	
+	Parameters
+	----------
+		name: str
+			name of the game
+		price: int
+			price of the game
+	Returns
+	-------
+	None
+	"""
+
         self.name = name
         self.price = price
         self.availability = ''
@@ -27,6 +80,14 @@ class BoardGame:
         self.idioma = ''
         
     def __str__(self):
+	"""
+	Creates a string with all the attributes separated by commas.
+
+	Returns
+	-------
+	toreturn: string that contains all the attributes of a BoardGame
+	"""
+
         toreturn = self.name
         toreturn = toreturn + "," + str(self.price)
         toreturn = toreturn + "," + self.availability
@@ -47,7 +108,13 @@ class BoardGame:
         return toreturn
     
     def to_array(self):
-        
+ 	"""
+	Creates an array with all the attributes.
+
+	Returns
+	-------
+	toreturn: array that contains all the attributes of a BoardGame
+	"""       
         toreturn = []
         toreturn.append(self.name)
         toreturn.append(self.price)
@@ -69,7 +136,14 @@ class BoardGame:
         return toreturn
     
     def build_header():
-        
+  	"""
+	Creates a heather with all the attributes.
+
+	Returns
+	-------
+	toreturn: array that contains all the attributes of a BoardGame
+	"""       
+       
         toreturn = []
         toreturn.append('Nombre')
         toreturn.append('Precio')
@@ -91,6 +165,21 @@ class BoardGame:
         return toreturn
 
     def add_attribute(self, attribute, value):
+ 	"""
+	Sets the value for a given attribute.
+
+	Parameters
+	----------
+	attribute : str
+		attribute of the game
+	value : str
+		value for the given attribute
+
+	Returns
+	-------
+	None
+	"""       
+
         if attribute == 'Autor':
             self.autor = value
         elif attribute == 'BGG':
@@ -122,15 +211,42 @@ class BoardGame:
         
         
 class Throttle:
-    """Add a delay between downloads to the same domain
-    """
+ 	"""
+	Adds a delay between downloads to the same domain
+ 	"""
+
     def __init__(self, delay):
-        # amount of delay between downloads for each domain
+	"""
+	Sets the delay between downloads for each domain.
+	Creates a dictionary called 'domains' that contains the timestamp when a domain was last accessed.
+	Parameters
+	----------
+	delay : int
+		number of seconds
+
+	Returns
+	-------
+	None
+	"""        
+	# amount of delay between downloads for each domain
         self.delay = delay
         # timestamp of when a domain was last accessed
         self.domains = {}
     
     def wait(self, url):
+ 	"""
+	Given a certain delay, tells if the request to an url needs to wait. If not, updates last_accessed time.
+
+	Parameters
+	----------
+	url : str
+		url addres to parse
+
+	Returns
+	-------
+	None
+	"""
+
         domain = urlparse(url).netloc
         last_accessed = self.domains.get(domain)
         if self.delay > 0 and last_accessed is not None:
@@ -143,6 +259,23 @@ class Throttle:
         self.domains[domain] = datetime.datetime.now()
  
 def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
+ 	"""
+	Downloads a webpage using given user.
+
+	Parameters
+	----------
+	url : str
+		url addres to download
+	user_aget: str
+		url user
+	num_retries: int
+		number of times to retry the download in case it fails
+
+	Returns
+	-------
+	html code
+	"""
+
     print('Downloading:', url)
     headers = {'User-agent': user_agent}
     request = Request(url, headers=headers)
