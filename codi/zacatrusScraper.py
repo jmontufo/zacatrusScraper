@@ -3,12 +3,20 @@ import datetime
 import time
 from bs4 import BeautifulSoup
 import csv
-
+import requests
+import json
+import os
 
 
 class BoardGame:
     
+    num_id = 0
+    
     def __init__(self, name, price):
+        
+        BoardGame.num_id = BoardGame.num_id + 1
+        
+        self.num_id = BoardGame.num_id
         self.name = name
         self.price = price
         self.availability = ''
@@ -27,7 +35,8 @@ class BoardGame:
         self.idioma = ''
         
     def __str__(self):
-        toreturn = self.name
+        toreturn = str(self.num_id)
+        toreturn = toreturn + "," + self.name
         toreturn = toreturn + "," + str(self.price)
         toreturn = toreturn + "," + self.availability
         toreturn = toreturn + "," + self.autor
@@ -49,6 +58,7 @@ class BoardGame:
     def to_array(self):
         
         toreturn = []
+        toreturn.append(self.num_id)
         toreturn.append(self.name)
         toreturn.append(self.price)
         toreturn.append(self.availability)
@@ -71,6 +81,7 @@ class BoardGame:
     def build_header():
         
         toreturn = []
+        toreturn.append('Num. Id')
         toreturn.append('Nombre')
         toreturn.append('Precio')
         toreturn.append('Disponibilidad')
@@ -172,7 +183,19 @@ def crawl_sitemap(url, max_downloaded_pages = 1000000):
         downloaded_pages = downloaded_pages + 1
         
 def availability_span(tag):
-    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'    
+    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'  
+
+def load_requests(source_url, folder):
+    r = requests.get(source_url, stream = True)
+    if r.status_code == 200:
+        aSplit = source_url.split('/')
+        ruta = folder + aSplit[len(aSplit)-1]
+        print(ruta)
+        output = open(ruta,"wb")
+        for chunk in r:
+            output.write(chunk)
+        output.close()
+      
         
 def scrap(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -216,7 +239,27 @@ def scrap(html):
             attribute_value = attribute_cell.string
             
             bg.add_attribute(attribute_name, attribute_value)
+    
+        # Main image, usually a video, so it's not the main image of the game
+        # image = soup.find("img", alt="main product photo")
+        # load_requests(image.get('src'))
         
+        
+        for script in soup.find_all("script"):
+            script_content = script.string
+            if script_content is not None and "mage/gallery/gallery" in script_content:
+                
+                folder = "./Pictures/" + str(bg.num_id) + "/"
+                os.mkdir(folder)
+                
+                script_in_dict = json.loads(script_content)
+                images_in_dict = script_in_dict["[data-gallery-role=gallery-placeholder]"]["mage/gallery/gallery"]["data"]
+                
+                for image_in_dict in images_in_dict:
+                    if image_in_dict["type"] == "image":
+                        image_url = image_in_dict["full"]
+                        load_requests(image_url, folder)
+    
         return bg
     
     return None
@@ -269,6 +312,3 @@ def get_links(html):
 #crawl_sitemap('https://zacatrus.es/pub/media/sitemap.xml',10)
 
 link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50)
-
-# if re.match('https://www.zacatrus.es/*', 'https://zacatrus.es/juegos-de-mesa/para_2.html'):
-#     print('holi')
