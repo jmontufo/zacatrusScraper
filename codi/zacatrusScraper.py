@@ -560,25 +560,28 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
             
             depth = seen[url]
             
-            if depth != max_depth:            
-                throttle.wait(url)
-                html = download(url)
-                
-                board_game = scrap(html, download_images)
-                
-                if board_game is not None:
-                    spamwriter.writerow(board_game.to_array())
-                
-                downloaded_pages = downloaded_pages + 1
-                
-                # filter for links matching our regular expression
-                for link in get_links(html):
-                    if re.match(link_regex, link):
-                        # check if have already seen this link
-                        if link not in seen:
-                            seen[link] = depth + 1
-                            crawl_queue.append(link)
-                
+            try:
+                if depth != max_depth:            
+                    throttle.wait(url)
+                    html = download(url)
+                    
+                    board_game = scrap(html, download_images)
+                    
+                    if board_game is not None:
+                        spamwriter.writerow(board_game.to_array())
+                    
+                    downloaded_pages = downloaded_pages + 1
+                    
+                    # filter for links matching our regular expression
+                    for link in get_links(html):
+                        if re.match(link_regex, link):
+                            # check if have already seen this link
+                            if link not in seen:
+                                seen[link] = depth + 1
+                                crawl_queue.append(link)
+            except:
+                print('Exception scraping: ', url)
+                    
 def get_links(html):
     
     """
@@ -602,4 +605,5 @@ def get_links(html):
     return webpage_regex.findall(html)
 
 
-link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50, 20)
+link_crawler('https://zacatrus.es', '(https:\/\/zacatrus\.es\/[^/]*\.html$|https:\/\/zacatrus\.es\/[^/]*\.html\?p=[0-9]+)', 5, 100, 1000000, 2000)
+    
