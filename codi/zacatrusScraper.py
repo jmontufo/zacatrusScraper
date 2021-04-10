@@ -3,7 +3,9 @@ import datetime
 import time
 from bs4 import BeautifulSoup
 import csv
-
+import requests
+import json
+import os
 
 
 class BoardGame:
@@ -47,6 +49,8 @@ class BoardGame:
     		
 	"""
     
+    num_id = 0
+    
     def __init__(self, name, price):
 	"""
 	Constructs all the necessarty attributes for the BoardGame object
@@ -62,6 +66,10 @@ class BoardGame:
 	None
 	"""
 
+        
+        BoardGame.num_id = BoardGame.num_id + 1
+        
+        self.num_id = BoardGame.num_id
         self.name = name
         self.price = price
         self.availability = ''
@@ -88,22 +96,23 @@ class BoardGame:
 	toreturn: string that contains all the attributes of a BoardGame
 	"""
 
-        toreturn = self.name
-        toreturn = toreturn + "," + str(self.price)
-        toreturn = toreturn + "," + self.availability
-        toreturn = toreturn + "," + self.autor
-        toreturn = toreturn + "," + self.BGG 
-        toreturn = toreturn + "," + self.tematica 
-        toreturn = toreturn + "," + self.sibuscas 
-        toreturn = toreturn + "," + self.edad 
-        toreturn = toreturn + "," + self.num_jugadores 
-        toreturn = toreturn + "," + self.tiempo 
-        toreturn = toreturn + "," + self.medidas 
-        toreturn = toreturn + "," + self.complejidad 
-        toreturn = toreturn + "," + self.editorial 
-        toreturn = toreturn + "," + self.dependencia_idioma 
-        toreturn = toreturn + "," + self.mecanica 
-        toreturn = toreturn + "," + self.idioma
+        toreturn = str(self.num_id)
+        toreturn += "," + self.name
+        toreturn += "," + str(self.price)
+        toreturn += "," + self.availability
+        toreturn += "," + self.autor
+        toreturn += "," + self.BGG 
+        toreturn += "," + self.tematica 
+        toreturn += "," + self.sibuscas 
+        toreturn += "," + self.edad 
+        toreturn += "," + self.num_jugadores 
+        toreturn += "," + self.tiempo 
+        toreturn += "," + self.medidas 
+        toreturn += "," + self.complejidad 
+        toreturn += "," + self.editorial 
+        toreturn += "," + self.dependencia_idioma 
+        toreturn += "," + self.mecanica 
+        toreturn += "," + self.idioma
         
         return toreturn
     
@@ -116,6 +125,7 @@ class BoardGame:
 	toreturn: array that contains all the attributes of a BoardGame
 	"""       
         toreturn = []
+        toreturn.append(self.num_id)
         toreturn.append(self.name)
         toreturn.append(self.price)
         toreturn.append(self.availability)
@@ -145,6 +155,7 @@ class BoardGame:
 	"""       
        
         toreturn = []
+        toreturn.append('Num. Id')
         toreturn.append('Nombre')
         toreturn.append('Precio')
         toreturn.append('Disponibilidad')
@@ -331,9 +342,20 @@ def availability_span(tag):
 	-------
 	Bool with test result
 	"""
-  
-    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'    
-        
+ 
+    return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'  
+
+def load_requests(source_url, folder):
+    r = requests.get(source_url, stream = True)
+    if r.status_code == 200:
+        aSplit = source_url.split('/')
+        ruta = folder + aSplit[len(aSplit)-1]
+        print(ruta)
+        output = open(ruta,"wb")
+        for chunk in r:
+            output.write(chunk)
+        output.close()
+              
 def scrap(html):
  	"""
     Scraps all the information for one game
@@ -388,7 +410,27 @@ def scrap(html):
             attribute_value = attribute_cell.string
             
             bg.add_attribute(attribute_name, attribute_value)
+    
+        # Main image, usually a video, so it's not the main image of the game
+        # image = soup.find("img", alt="main product photo")
+        # load_requests(image.get('src'))
         
+        
+        for script in soup.find_all("script"):
+            script_content = script.string
+            if script_content is not None and "mage/gallery/gallery" in script_content:
+                
+                folder = "./Pictures/" + str(bg.num_id) + "/"
+                os.mkdir(folder)
+                
+                script_in_dict = json.loads(script_content)
+                images_in_dict = script_in_dict["[data-gallery-role=gallery-placeholder]"]["mage/gallery/gallery"]["data"]
+                
+                for image_in_dict in images_in_dict:
+                    if image_in_dict["type"] == "image":
+                        image_url = image_in_dict["full"]
+                        load_requests(image_url, folder)
+    
         return bg
     
     return None
@@ -467,6 +509,3 @@ def get_links(html):
 #crawl_sitemap('https://zacatrus.es/pub/media/sitemap.xml',10)
 
 link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50)
-
-# if re.match('https://www.zacatrus.es/*', 'https://zacatrus.es/juegos-de-mesa/para_2.html'):
-#     print('holi')
