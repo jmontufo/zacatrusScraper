@@ -9,67 +9,78 @@ import os
 
 
 class BoardGame:
-   	"""
-	This is a class to represent a Board Game.
-
-	Attributes
-	----------
-	name : str
-		name of the item
-	price : int
-		price at the moment of the download of the data from 			Zacatrus.es, in Euro
-	availability : str
-		tells if the game is avaiable for purchase at the website or not
-	autor : str
-		creator of the game
-        BGG : int
-		id of the game in BGG database
-        tematica : str
-		topics that appear in the game, as culture, trade, etc. Can have multiple values
-        sibuscas : str
-		tags to find the game e.g. family, party, etc. Can have multiple values
-        edad : str
-		recommended players' age, grouped in intervals. Can have multiple values
-        num_jugadores : str
-		minimum and maximum number of players
-        tiempo : str
-		average duration of a game
-        medidas : str
-		size of the packaging
-        complejidad : str
-		tells if the game is easy, medium or difficult to play
-        editorial : str
-		publisher of the game
-        dependencia_idioma : str
-		tells if it is necessary to know the laguage of the game to play, ranked in: not necessary / only instructions / highly necessary
-        mecanica : str
-		game's mechanism (e.g. question-answer, crawler, etc.). Can have multiple values
-        idioma : str
-		language of the game
-    		
-	"""
     
-    num_id = 0
+    """
+	
+    This is a class to represent a Board Game.
+    
+    Class Attributes
+    ---------------
+    
+      last_id_used : int
+          identifier of the last board game created
+	
+    Attributes
+    ----------
+    	name : str
+    		name of the item
+	   price : int
+    		price at the moment of the download of the data from Zacatrus.es, in Euro
+	   availability : str
+    		tells if the game is avaiable for purchase at the website or not
+	   autor : str
+    		creator of the game
+      BGG : int
+    		id of the game in BGG database
+      tematica : str
+    		topics that appear in the game, as culture, trade, etc. Can have multiple values
+      sibuscas : str
+    		tags to find the game e.g. family, party, etc. Can have multiple values
+      edad : str
+    		recommended players' age, grouped in intervals. Can have multiple values
+      num_jugadores : str
+    		minimum and maximum number of players
+      tiempo : str
+    		average duration of a game
+      medidas : str
+		   size of the packaging
+      complejidad : str
+		   tells if the game is easy, medium or difficult to play
+      editorial : str
+		   publisher of the game
+      dependencia_idioma : str
+		   tells if it is necessary to know the laguage of the game to play, ranked in: not necessary / only instructions / highly necessary
+      mecanica : str
+		   game's mechanism (e.g. question-answer, crawler, etc.). Can have multiple values
+      idioma : str
+		   language of the game
+    		
+    """    
+    
+    last_id_used = 0
     
     def __init__(self, name, price):
-	"""
-	Constructs all the necessarty attributes for the BoardGame object
 	
-	Parameters
-	----------
-		name: str
-			name of the game
-		price: int
-			price of the game
-	Returns
-	-------
-	None
-	"""
-
+        """
+	
+        Constructs all the necessarty attributes for the BoardGame object
+	
+        Parameters
+        ----------
+          name: str
+             name of the game
+          price: int
+       		price of the game
+               
+        Returns
+        -------
+          None
         
-        BoardGame.num_id = BoardGame.num_id + 1
+        """
         
-        self.num_id = BoardGame.num_id
+        BoardGame.last_id_used = BoardGame.last_id_used + 1
+        
+        self.num_id = BoardGame.last_id_used
         self.name = name
         self.price = price
         self.availability = ''
@@ -88,108 +99,121 @@ class BoardGame:
         self.idioma = ''
         
     def __str__(self):
-	"""
-	Creates a string with all the attributes separated by commas.
-
-	Returns
-	-------
-	toreturn: string that contains all the attributes of a BoardGame
-	"""
-
-        toreturn = str(self.num_id)
-        toreturn += "," + self.name
-        toreturn += "," + str(self.price)
-        toreturn += "," + self.availability
-        toreturn += "," + self.autor
-        toreturn += "," + self.BGG 
-        toreturn += "," + self.tematica 
-        toreturn += "," + self.sibuscas 
-        toreturn += "," + self.edad 
-        toreturn += "," + self.num_jugadores 
-        toreturn += "," + self.tiempo 
-        toreturn += "," + self.medidas 
-        toreturn += "," + self.complejidad 
-        toreturn += "," + self.editorial 
-        toreturn += "," + self.dependencia_idioma 
-        toreturn += "," + self.mecanica 
-        toreturn += "," + self.idioma
         
-        return toreturn
+        """
+        
+        Creates a string with all the attributes separated by commas.
+            
+        Returns
+        -------            
+          to_return: string that contains all the attributes of a BoardGame
+        
+        """
+
+        to_return = str(self.num_id)
+        to_return += "," + self.name
+        to_return += "," + str(self.price)
+        to_return += "," + self.availability
+        to_return += "," + self.autor
+        to_return += "," + self.BGG 
+        to_return += "," + self.tematica 
+        to_return += "," + self.sibuscas 
+        to_return += "," + self.edad 
+        to_return += "," + self.num_jugadores 
+        to_return += "," + self.tiempo 
+        to_return += "," + self.medidas 
+        to_return += "," + self.complejidad 
+        to_return += "," + self.editorial 
+        to_return += "," + self.dependencia_idioma 
+        to_return += "," + self.mecanica 
+        to_return += "," + self.idioma
+        
+        return to_return
     
     def to_array(self):
- 	"""
-	Creates an array with all the attributes.
-
-	Returns
-	-------
-	toreturn: array that contains all the attributes of a BoardGame
-	"""       
-        toreturn = []
-        toreturn.append(self.num_id)
-        toreturn.append(self.name)
-        toreturn.append(self.price)
-        toreturn.append(self.availability)
-        toreturn.append(self.autor)
-        toreturn.append(self.BGG)
-        toreturn.append(self.tematica)
-        toreturn.append(self.sibuscas)
-        toreturn.append(self.edad)
-        toreturn.append(self.num_jugadores)
-        toreturn.append(self.tiempo)
-        toreturn.append(self.medidas)
-        toreturn.append(self.complejidad)
-        toreturn.append(self.editorial)
-        toreturn.append(self.dependencia_idioma)
-        toreturn.append(self.mecanica)
-        toreturn.append(self.idioma)
         
-        return toreturn
+        """
+        
+        Creates an array with all the attributes.
+            
+        Returns
+        -------
+          to_return: array that contains all the attributes of a BoardGame
+              
+        """
+        
+        to_return = []
+        to_return.append(self.num_id)
+        to_return.append(self.name)
+        to_return.append(self.price)
+        to_return.append(self.availability)
+        to_return.append(self.autor)
+        to_return.append(self.BGG)
+        to_return.append(self.tematica)
+        to_return.append(self.sibuscas)
+        to_return.append(self.edad)
+        to_return.append(self.num_jugadores)
+        to_return.append(self.tiempo)
+        to_return.append(self.medidas)
+        to_return.append(self.complejidad)
+        to_return.append(self.editorial)
+        to_return.append(self.dependencia_idioma)
+        to_return.append(self.mecanica)
+        to_return.append(self.idioma)
+        
+        return to_return
     
     def build_header():
-  	"""
-	Creates a heather with all the attributes.
-
-	Returns
-	-------
-	toreturn: array that contains all the attributes of a BoardGame
-	"""       
-       
-        toreturn = []
-        toreturn.append('Num. Id')
-        toreturn.append('Nombre')
-        toreturn.append('Precio')
-        toreturn.append('Disponibilidad')
-        toreturn.append('Autor')
-        toreturn.append('BGG')
-        toreturn.append('Temática')
-        toreturn.append('Si Buscas...')
-        toreturn.append('Edad')
-        toreturn.append('Núm. jugadores')
-        toreturn.append('Tiempo de juego')
-        toreturn.append('Medidas')
-        toreturn.append('Complejidad')
-        toreturn.append('Editorial')
-        toreturn.append('Dependencia del idioma')
-        toreturn.append('Mecánica')
-        toreturn.append('Idioma')
         
-        return toreturn
+        """       
+        
+        Creates a heather with all the attributes.
+            
+        Returns
+        -------
+          to_return: array that contains all the attributes of a BoardGame
+              
+        """       
+       
+        to_return = []
+        to_return.append('Num. Id')
+        to_return.append('Nombre')
+        to_return.append('Precio')
+        to_return.append('Disponibilidad')
+        to_return.append('Autor')
+        to_return.append('BGG')
+        to_return.append('Temática')
+        to_return.append('Si Buscas...')
+        to_return.append('Edad')
+        to_return.append('Núm. jugadores')
+        to_return.append('Tiempo de juego')
+        to_return.append('Medidas')
+        to_return.append('Complejidad')
+        to_return.append('Editorial')
+        to_return.append('Dependencia del idioma')
+        to_return.append('Mecánica')
+        to_return.append('Idioma')
+        
+        return to_return
 
     def add_attribute(self, attribute, value):
- 	"""
-	Sets the value for a given attribute.
-
-	Parameters
-	----------
-	attribute : str
-		attribute of the game
-	value : str
-		value for the given attribute
-
-	Returns
-	-------
-	None
-	"""       
+        
+        """
+        
+        Sets the value for a given attribute.
+            
+        Parameters
+        ----------
+          attribute : str
+              attribute of the game
+          value : str
+              value for the given attribute
+                  
+        Returns
+        -------
+          None
+        
+        """       
 
         if attribute == 'Autor':
             self.autor = value
@@ -217,79 +241,101 @@ class BoardGame:
             self.mecanica = value
         elif attribute == 'Idioma':
             self.idioma = value
-        else:
-            print(attribute)
+        # else:
+        #     print(attribute)
         
         
-class Throttle:
- 	"""
-	Adds a delay between downloads to the same domain
+class Throttle:    
+    
+    """
+	
+    Class that manages the delay between downloads to the same domain
+    
+    Attributes
+    ----------
+    	delay : int
+    		amount of delay between downloads for each domain
+	   domains : dict
+    		timestamp of when a domain was last accessed    
+	
  	"""
 
     def __init__(self, delay):
-	"""
-	Sets the delay between downloads for each domain.
-	Creates a dictionary called 'domains' that contains the timestamp when a domain was last accessed.
-	Parameters
-	----------
-	delay : int
-		number of seconds
-
-	Returns
-	-------
-	None
-	"""        
-	# amount of delay between downloads for each domain
+        
+        """
+        
+        Sets the delay between downloads for each domain.
+        Creates a dictionary called 'domains' that contains the timestamp when a domain was last accessed.
+	
+        Parameters
+        ----------
+          delay : int
+              number of seconds
+              
+        Returns
+        -------
+          None
+          
+        """      
+        
         self.delay = delay
-        # timestamp of when a domain was last accessed
         self.domains = {}
     
     def wait(self, url):
- 	"""
-	Given a certain delay, tells if the request to an url needs to wait. If not, updates last_accessed time.
-
-	Parameters
-	----------
-	url : str
-		url addres to parse
-
-	Returns
-	-------
-	None
-	"""
+        
+        """
+        
+        Given a certain delay, tells if the request to an url needs to wait. If not, updates last_accessed time.
+        
+        Parameters
+        ----------
+          url : str
+              url addres to parse
+              
+        Returns
+        -------
+          None
+          
+        """
 
         domain = urlparse(url).netloc
         last_accessed = self.domains.get(domain)
+        
         if self.delay > 0 and last_accessed is not None:
             sleep_secs = self.delay - (datetime.datetime.now() - last_accessed).seconds
             if sleep_secs > 0:
-                # domain has been accessed recently
-                # so need to sleep
+                # domain has been accessed recently so need to sleep
                 time.sleep(sleep_secs)
+                
         # update the last accessed time
         self.domains[domain] = datetime.datetime.now()
  
 def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
- 	"""
-	Downloads a webpage using given user.
-
-	Parameters
-	----------
-	url : str
-		url addres to download
-	user_agent: str
-		url user
-	num_retries: int
-		number of times to retry the download in case it fails
-
-	Returns
-	-------
-	html code
-	"""
+    
+    """
+    
+    Downloads a webpage using given user.
+    
+    Parameters
+    ----------
+      url : str
+          url address to download
+      user_agent: str
+          user agent that will identify the origin of the downloads
+      num_retries: int
+          number of times to retry the download in case it fails
+          
+    Returns
+    -------
+        html code of the downloaded page
+        
+    """
 
     print('Downloading:', url)
+    
     headers = {'User-agent': user_agent}
     request = Request(url, headers=headers)
+    
     try:
         html = urlopen(request).read()
         html = html.decode('utf-8')
@@ -300,183 +346,228 @@ def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
             if hasattr(e, 'code') and 500 <= e.code < 600:
                 # recursively retry 5xx HTTP errors
                 return download(url, user_agent, num_retries-1)
+            
     return html
 
-def crawl_sitemap(url, max_downloaded_pages = 1000000):
- 	"""
-	Downloads the sitemap file, extracts the links, downloads them.
-
-	Parameters
-	----------
-	url : str
-		url addres of the sitemap
-	max_downloaded_pages: int
-		max number of pages to download
-
-	Returns
-	-------
-	none
-	"""
-    downloaded_pages = 0
-    # download the sitemap file
-    sitemap = download(url)
-    # extract the sitemap links
-    links = re.findall('<loc>(.*?)</loc>', sitemap)
-    # download each link
-    for link in links:
-        if downloaded_pages > max_downloaded_pages:
-            return
-        print(download(link))
-        downloaded_pages = downloaded_pages + 1
         
-def availability_span(tag):
- 	"""
-    Checks if 'tag' is a div of class 'stock'
-
-	Parameters
-	----------
-	tag : str
-        tag to perform the test on
+def availability_div(tag):
+    
+    """
+    
+    Function used to find the availability div with beautiful soup
+	
+    Parameters
+    ----------
+      tag : str
+          tag to perform the test on
+          
+    Returns
+    -------
+        Bool with test result
         
-	Returns
-	-------
-	Bool with test result
-	"""
+    """
  
     return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'  
 
-def load_requests(source_url, folder):
-    r = requests.get(source_url, stream = True)
-    if r.status_code == 200:
-        aSplit = source_url.split('/')
-        ruta = folder + aSplit[len(aSplit)-1]
-        print(ruta)
-        output = open(ruta,"wb")
-        for chunk in r:
-            output.write(chunk)
-        output.close()
-              
-def scrap(html):
- 	"""
-    Scraps all the information for one game
-
-	Parameters
-	----------
-	html : str
-        html page for one game
+def download_image(source_url, directory):
+    
+    """
+    
+    Downloads an image from a server
+	
+    Parameters
+    ----------
+      source_url : str
+          Address of the image to download
+      directory : str
+          Directory where the image is saved
+          
+    Returns
+    -------
+        None
         
-	Returns
-	-------
-	Object of class 'bg' with all the information for the game, or None.
-	"""
-    soup = BeautifulSoup(html, 'html.parser')
+    """
+    response = requests.get(source_url, stream = True)
     
-    description = soup.find("div", class_="cn_product_visited")
+    if response.status_code == 200:
+        
+        aSplit = source_url.split('/')
+        filename = directory + aSplit[len(aSplit)-1]
+        
+        output = open(filename,"wb")
+        
+        for chunk in response:
+            output.write(chunk)
+            
+        output.close()
+        
+def is_a_board_game(soup):
     
-    if description is None:
-        return None
+    """
     
+    Determines whether the content of the page corresponds to a board game
+	
+    Parameters
+    ----------
+      soup : BeautifulSoup
+          Html of the page transformed in soup
+          
+    Returns
+    -------
+        True if the pages corresponds to a board game, False otherwise
+        
+    """
     
-    categories = description.find_all("span",class_="category")
+    description_container = soup.find("div", class_="cn_product_visited")
+    
+    if description_container is None:
+        return False    
+    
+    categories = description_container.find_all("span",class_="category")
     is_board_game = False
     
     for category in categories:
-        if category.string == '/Juegos de mesa':
+        if category.string == '/Juegos de mesa' or category.string == '/Productos/Juegos de mesa':
             is_board_game = True
     
-    if not is_board_game:
-        return None
+    return is_board_game    
+              
+def scrap(html, download_images = False):
     
-    attributes_table = soup.find(id="product-attribute-specs-table")
+    """
     
-    if attributes_table is not None:
-        # title_container = soup.find(title_meta)
-        # title = title_container['content']
+    Scraps all the information for one game
+    
+    Parameters
+    ----------
+      html : str
+          html page for one game
+      download_images : boolean
+          whether the images of the board game are downloaded or not
+          
+    Returns
+    -------
+        BoardGame with all the information for the game, or None if the html
+        doesn't belong to a board game page.
         
+    """
+    
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    if is_a_board_game(soup):
+                
         title_container = soup.find("meta",  property="og:title")
+        
+        if title_container is None:
+            return None
+        
         title = title_container['content']
         
         price_container = soup.find("meta",  property="product:price:amount")
+        
+        if price_container is None:
+            return None
+        
         price = price_container['content']
         
         bg = BoardGame(title, price)        
         
-        availability_container = soup.find(availability_span)
-        bg.availability = availability_container.find('span').string
+        availability_container = soup.find(availability_div)
         
-        for attribute_row in attributes_table.tbody.find_all("tr"):
-            attribute_cell = attribute_row.td
-            attribute_name = attribute_cell['data-th']
-            attribute_value = attribute_cell.string
-            
-            bg.add_attribute(attribute_name, attribute_value)
-    
-        # Main image, usually a video, so it's not the main image of the game
-        # image = soup.find("img", alt="main product photo")
-        # load_requests(image.get('src'))
+        if availability_container is not None:
+            bg.availability = availability_container.find('span').string        
         
+        # Obtain the attributes from the table
+        attributes_table = soup.find(id="product-attribute-specs-table")
         
-        for script in soup.find_all("script"):
-            script_content = script.string
-            if script_content is not None and "mage/gallery/gallery" in script_content:
+        if attributes_table is not None:            
+            for attribute_row in attributes_table.tbody.find_all("tr"):
+                attribute_cell = attribute_row.td
+                attribute_name = attribute_cell['data-th']
+                attribute_value = attribute_cell.string
                 
-                folder = "./Pictures/" + str(bg.num_id) + "/"
-                os.mkdir(folder)
+                bg.add_attribute(attribute_name, attribute_value)    
+        
+        if download_images:            
+            # Download the images of the board game
+            for script in soup.find_all("script"):
                 
-                script_in_dict = json.loads(script_content)
-                images_in_dict = script_in_dict["[data-gallery-role=gallery-placeholder]"]["mage/gallery/gallery"]["data"]
+                script_content = script.string
                 
-                for image_in_dict in images_in_dict:
-                    if image_in_dict["type"] == "image":
-                        image_url = image_in_dict["full"]
-                        load_requests(image_url, folder)
+                if script_content is not None and "mage/gallery/gallery" in script_content:
+                    
+                    directory = "./Pictures/" + str(bg.num_id) + "/"
+                    os.mkdir(directory)
+                    
+                    script_in_dict = json.loads(script_content)
+                    images_in_dict = script_in_dict["[data-gallery-role=gallery-placeholder]"]["mage/gallery/gallery"]["data"]
+                    
+                    for image_in_dict in images_in_dict:
+                        if image_in_dict["type"] == "image":
+                            image_url = image_in_dict["full"]
+                            download_image(image_url, directory)
     
         return bg
     
-    return None
+    else:
+        return None
         
-def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pages = 1000000):
-    """Crawl from the given seed URL following links matched by link_regex.
+def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pages = 1000000, max_downloaded_images = 0):
+    
+    """
+    
+    Crawl from the given seed URL following links matched by link_regex.
     
     Parameters
-	----------
-	seed_url : str
-        base url for the site
-    link_regex: str
-        regex to match the links to crawl
-    delay: int
-        delay between downloads
-    max_depth: int
-        do not follow links above this depth
-    max_downloaded_pages: int
-        max number of pages to download
-    
+    ----------
+      seed_url : str
+          base url for the site
+      link_regex: str
+          regex to match the links to crawl
+      delay: int
+          delay between downloads
+      max_depth: int
+          do not follow links above this depth
+      max_downloaded_pages: int
+          max number of pages to download
+      max_downloaded_images: int
+          max number of games whose images will be downloaded
+          
     Returns
-	-------
-	None
+    -------
+      None
+      
     """    
+    
     crawl_queue = [seed_url]
     seen = {}
     seen[seed_url] = 0
     downloaded_pages = 0
+    download_images = True
     throttle = Throttle(delay)
+    
     with open('games.csv', 'w', newline='') as csvfile:
+        
         spamwriter = csv.writer(csvfile, delimiter=';', quotechar='\'', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(BoardGame.build_header())
     
         while crawl_queue and downloaded_pages < max_downloaded_pages:
+                        
+            if BoardGame.last_id_used >= max_downloaded_images:
+                download_images = False
+                
             url = crawl_queue.pop()
             
             depth = seen[url]
-            if depth != max_depth:
             
+            if depth != max_depth:            
                 throttle.wait(url)
                 html = download(url)
                 
-                game = scrap(html)
+                board_game = scrap(html, download_images)
                 
-                if game is not None:
-                    spamwriter.writerow(game.to_array())
+                if board_game is not None:
+                    spamwriter.writerow(board_game.to_array())
                 
                 downloaded_pages = downloaded_pages + 1
                 
@@ -489,23 +580,26 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
                             crawl_queue.append(link)
                 
 def get_links(html):
-    """Return a list of links from html.
-        
+    
+    """
+    
+    Return a list of links from html.
+    
     Parameters
-	----------
-    html: str
-        html code for the page where links have to be found
-        
+    ----------
+      html: str
+          html code for the page where links have to be found
+          
     Returns
-	-------
-	List with all links found
+    -------
+        List with all links found
+        
     """
     # a regular expression to extract all links from the webpage
     webpage_regex = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
+    
     # list of all links from the webpage
     return webpage_regex.findall(html)
 
-#print(download('http://www.zacatrus.com'))
-#crawl_sitemap('https://zacatrus.es/pub/media/sitemap.xml',10)
 
-link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50)
+link_crawler('https://zacatrus.es/nemo-s-war.html', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50, 20)
