@@ -602,4 +602,4 @@ def get_links(html):
     return webpage_regex.findall(html)
 
 
-link_crawler('https://zacatrus.es/nemo-s-war.html', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50, 20)
+link_crawler('https://zacatrus.es/juegos-de-mesa', 'https://zacatrus\.es/[^/]*\.html$', 5, 3, 50, 20)
