@@ -266,7 +266,7 @@ def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
 	----------
 	url : str
 		url addres to download
-	user_aget: str
+	user_agent: str
 		url user
 	num_retries: int
 		number of times to retry the download in case it fails
@@ -292,6 +292,20 @@ def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
     return html
 
 def crawl_sitemap(url, max_downloaded_pages = 1000000):
+ 	"""
+	Downloads the sitemap file, extracts the links, downloads them.
+
+	Parameters
+	----------
+	url : str
+		url addres of the sitemap
+	max_downloaded_pages: int
+		max number of pages to download
+
+	Returns
+	-------
+	none
+	"""
     downloaded_pages = 0
     # download the sitemap file
     sitemap = download(url)
@@ -305,9 +319,34 @@ def crawl_sitemap(url, max_downloaded_pages = 1000000):
         downloaded_pages = downloaded_pages + 1
         
 def availability_span(tag):
+ 	"""
+    Checks if 'tag' is a div of class 'stock'
+
+	Parameters
+	----------
+	tag : str
+        tag to perform the test on
+        
+	Returns
+	-------
+	Bool with test result
+	"""
+  
     return tag.name == 'div' and tag.has_attr('class') and tag['class'][0] == 'stock'    
         
 def scrap(html):
+ 	"""
+    Scraps all the information for one game
+
+	Parameters
+	----------
+	html : str
+        html page for one game
+        
+	Returns
+	-------
+	Object of class 'bg' with all the information for the game, or None.
+	"""
     soup = BeautifulSoup(html, 'html.parser')
     
     description = soup.find("div", class_="cn_product_visited")
@@ -355,7 +394,24 @@ def scrap(html):
     return None
         
 def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pages = 1000000):
-    """Crawl from the given seed URL following links matched by link_regex
+    """Crawl from the given seed URL following links matched by link_regex.
+    
+    Parameters
+	----------
+	seed_url : str
+        base url for the site
+    link_regex: str
+        regex to match the links to crawl
+    delay: int
+        delay between downloads
+    max_depth: int
+        do not follow links above this depth
+    max_downloaded_pages: int
+        max number of pages to download
+    
+    Returns
+	-------
+	None
     """    
     crawl_queue = [seed_url]
     seen = {}
@@ -391,7 +447,16 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
                             crawl_queue.append(link)
                 
 def get_links(html):
-    """Return a list of links from html
+    """Return a list of links from html.
+        
+    Parameters
+	----------
+    html: str
+        html code for the page where links have to be found
+        
+    Returns
+	-------
+	List with all links found
     """
     # a regular expression to extract all links from the webpage
     webpage_regex = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
