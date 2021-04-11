@@ -1,3 +1,5 @@
+import Throttle
+
 def extreu_ranking(font, sortida):
     """
     Donat un fitxer games.csv que conte a la 5a columna
@@ -16,35 +18,44 @@ def extreu_ranking(font, sortida):
     from urllib.request import urlopen
 
     # Extreu els id de BGG del fitxer games.csv
-    with open(font, encoding='latin1') as csv_file, open(sortida, 'w') as r:
+    with open(font) as csv_file, open(sortida, 'w', newline='') as r:
         csv_reader = csv.reader(csv_file, delimiter=';')
         output = []
         urlapi = []
-        rows = []
         headers = next(csv_reader)
+        
+        throttle = Throttle.Throttle(2)
+    
         for row in csv_reader:
-            ranking = -1
-            if row[4].strip() != '':
-                # per cada un dels id obtinguts, crea una url per la api
-                urlapi = 'https://boardgamegeek.com/xmlapi2/thing?stats=1&id='+row[4]
-                # Fer una crida a la API per cada url
-                with urlopen(urlapi) as u:                         
-                    data=[x.decode().strip() for x in u.readlines()]
-                # afegir [id, ranking] la llista 'rows'
-                for linia in data:
-                    if "<average value" in linia:
-                        ranking=linia.split('"')[1]
-                        break
-            output.append(list(row) + [ranking])
+            
+            print('Obtain ranquing for ', row[0])
+
+            try:
+                ranking = None
+                if row[5].strip() != '':
+                    # per cada un dels id obtinguts, crea una url per la api
+                    urlapi = 'https://boardgamegeek.com/xmlapi2/thing?stats=1&id='+row[5]
+                    # Fer una crida a la API per cada url                             
+                    throttle.wait(urlapi)
+                    with urlopen(urlapi) as u:                         
+                        data=[x.decode().strip() for x in u.readlines()]
+                    # afegir [id, ranking] la llista 'rows'
+                    for linia in data:
+                        if "<average value" in linia:
+                            ranking=linia.split('"')[1]
+                            ranking = ranking.replace('.', ',')
+                            break
+                output.append(list(row) + [ranking])
+            except:
+                print('Exception obtaining rating for id ', row[0])
 
     # escriu un fitxer csv amb els id i el ranking corresponent
     with open(sortida, 'w') as r:
-        write = csv.writer(r)
+        write = csv.writer(r, delimiter=';', quotechar='\'', quoting=csv.QUOTE_MINIMAL)
         write.writerow(list(headers) + ['ranking'])
         write.writerows(output)
 
-if __name__ = '__main__':
-    font = 'games.csv'
-    sortida = 'games2.csv'
-    extreu_ranking(font, sortida)
-
+# if __name__ = '__main__':
+font = 'games.csv'
+sortida = 'games_wih_rating.csv'
+extreu_ranking(font, sortida)

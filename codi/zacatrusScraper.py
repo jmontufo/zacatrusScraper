@@ -6,6 +6,7 @@ import csv
 import requests
 import json
 import os
+import Throttle
 
 
 class BoardGame:
@@ -243,72 +244,6 @@ class BoardGame:
             self.idioma = value
         # else:
         #     print(attribute)
-        
-        
-class Throttle:    
-    
-    """
-	
-    Class that manages the delay between downloads to the same domain
-    
-    Attributes
-    ----------
-    	delay : int
-    		amount of delay between downloads for each domain
-	   domains : dict
-    		timestamp of when a domain was last accessed    
-	
- 	"""
-
-    def __init__(self, delay):
-        
-        """
-        
-        Sets the delay between downloads for each domain.
-        Creates a dictionary called 'domains' that contains the timestamp when a domain was last accessed.
-	
-        Parameters
-        ----------
-          delay : int
-              number of seconds
-              
-        Returns
-        -------
-          None
-          
-        """      
-        
-        self.delay = delay
-        self.domains = {}
-    
-    def wait(self, url):
-        
-        """
-        
-        Given a certain delay, tells if the request to an url needs to wait. If not, updates last_accessed time.
-        
-        Parameters
-        ----------
-          url : str
-              url addres to parse
-              
-        Returns
-        -------
-          None
-          
-        """
-
-        domain = urlparse(url).netloc
-        last_accessed = self.domains.get(domain)
-        
-        if self.delay > 0 and last_accessed is not None:
-            sleep_secs = self.delay - (datetime.datetime.now() - last_accessed).seconds
-            if sleep_secs > 0:
-                # domain has been accessed recently so need to sleep
-                time.sleep(sleep_secs)
-                
-        # update the last accessed time
-        self.domains[domain] = datetime.datetime.now()
  
 def download(url, user_agent='PracticaUOC/jmontufo', num_retries=2):
     
@@ -544,7 +479,7 @@ def link_crawler(seed_url, link_regex, delay = 5, max_depth=2, max_downloaded_pa
     seen[seed_url] = 0
     downloaded_pages = 0
     download_images = True
-    throttle = Throttle(delay)
+    throttle = Throttle.Throttle(delay)
     
     with open('games.csv', 'w', newline='') as csvfile:
         
