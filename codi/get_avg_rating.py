@@ -2,10 +2,10 @@ import Throttle
 
 def extreu_ranking(font, sortida):
     """
-    Donat un fitxer games.csv que conte a la 5a columna
+    Donat un fitxer 'font' que conte a la 5a columna
     un ID de joc a la BGG, fa una crida a la API de BGG
     per cada ID i retorna el corresponent average_ranking.
-    El resultat s'extreu en el fitxer rankings.csv
+    El resultat s'extreu en el fitxer 'sortida'.
     
     Attributes
 	----------
