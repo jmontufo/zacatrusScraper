@@ -15,3 +15,6 @@
 - games.csv --> Dataset obtingut després de fer web scraping a Zacatrus.es
 - games_with_ratings.csv --> Dataset obtingut a partir d'afegir la valoració de la BGG al jocs obtinguts de Zacatrus.es
 
+## DOI del dataset a Zenodo
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4679367.svg)](https://doi.org/10.5281/zenodo.4679367)
